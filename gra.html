@@ -1,0 +1,2131 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkyGrojki - Gry online</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #14243b;
+    background: linear-gradient(180deg, #50b9ff, #b9e8ff, #eaf8ff);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* CHMURKI */
+
+.cloud {
+    position: fixed;
+    background: white;
+    width: 150px;
+    height: 48px;
+    border-radius: 50px;
+    opacity: .8;
+    z-index: -1;
+    animation: clouds 35s linear infinite;
+}
+
+.cloud:before, .cloud:after {
+    content: "";
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+}
+
+.cloud:before {
+    width: 65px;
+    height: 65px;
+    top: -30px;
+    left: 25px;
+}
+
+.cloud:after {
+    width: 85px;
+    height: 85px;
+    top: -43px;
+    right: 20px;
+}
+
+.c1 { top: 15%; left: -180px; }
+.c2 { top: 55%; left: -300px; animation-delay: -15s; }
+.c3 { top: 80%; left: -200px; animation-delay: -25s; }
+
+@keyframes clouds {
+    from { transform: translateX(0); }
+    to { transform: translateX(130vw); }
+}
+
+/* NAGŁÓWEK */
+
+header {
+    text-align: center;
+    padding: 30px 15px 20px;
+}
+
+header h1 {
+    font-size: 48px;
+    margin: 0;
+    color: white;
+    text-shadow: 2px 4px 8px #3988b5;
+}
+
+header p {
+    color: #17466a;
+    font-size: 17px;
+}
+
+/* MENU */
+
+nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px;
+}
+
+nav button {
+    background: #172b43;
+    color: white;
+    border: 2px solid white;
+    padding: 13px 22px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background .6s, color .6s, transform .4s;
+}
+
+nav button:hover {
+    background: white;
+    color: #172b43;
+    transform: translateY(-4px);
+}
+
+nav button.active {
+    background: white;
+    color: #172b43;
+}
+
+/* GŁÓWNA KARTA */
+
+.container {
+    width: min(900px, 94%);
+    margin: 25px auto;
+    background: rgba(255,255,255,.88);
+    padding: 25px;
+    border-radius: 22px;
+    box-shadow: 0 10px 35px #347ca855;
+    min-height: 450px;
+}
+
+.game {
+    display: none;
+    text-align: center;
+}
+
+.game.active {
+    display: block;
+}
+
+h2 {
+    color: #167bb5;
+    font-size: 30px;
+}
+
+button, input {
+    font-family: inherit;
+}
+
+.action {
+    background: #168fd0;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    padding: 11px 20px;
+    margin: 6px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.action:hover {
+    background: #075b91;
+    transform: scale(1.05);
+}
+
+.info {
+    font-size: 19px;
+    font-weight: bold;
+    margin: 15px;
+}
+
+/* TETRIS */
+
+#tetrisCanvas {
+    background: #101c30;
+    border: 5px solid #328bc1;
+    border-radius: 8px;
+    max-width: 100%;
+}
+
+.controls {
+    color: #345;
+    margin: 12px;
+}
+
+/* WISIELEC */
+
+#word {
+    font-size: 32px;
+    letter-spacing: 8px;
+    margin: 30px;
+    font-weight: bold;
+}
+
+#letters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    max-width: 600px;
+    margin: auto;
+}
+
+#letters button {
+    width: 39px;
+    height: 39px;
+    border: none;
+    border-radius: 8px;
+    background: #299bd7;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#letters button:disabled {
+    background: #aaa;
+    cursor: default;
+}
+
+#hangmanDrawing {
+    font-size: 23px;
+    white-space: pre;
+    line-height: 1.3;
+}
+
+/* SNAKE */
+
+#snakeCanvas {
+    background: #142c32;
+    border: 5px solid #328bc1;
+    border-radius: 8px;
+    max-width: 100%;
+}
+
+/* KÓŁKO I KRZYŻYK */
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(3, 90px);
+    gap: 8px;
+    justify-content: center;
+    margin: 25px auto;
+}
+
+.cell {
+    width: 90px;
+    height: 90px;
+    font-size: 42px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    background: #c9edff;
+    color: #126ba4;
+    cursor: pointer;
+}
+
+.cell:hover {
+    background: #9cdbff;
+}
+
+/* FLAGI */
+
+#flag {
+    font-size: 100px;
+    margin: 20px;
+}
+
+#flagInput {
+    padding: 13px;
+    width: min(300px, 90%);
+    border: 2px solid #69bce9;
+    border-radius: 9px;
+    font-size: 17px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #276087;
+	
+.home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
+    gap: 18px;
+    margin: 25px 0;
+}
+
+.game-card {
+    background: linear-gradient(140deg,#43b8f5,#176cae);
+    color: white;
+    padding: 25px 12px;
+    border-radius: 18px;
+    cursor: pointer;
+    border: 2px solid white;
+    transition: .5s;
+    text-align: center;
+}
+
+.game-card:hover {
+    transform: translateY(-8px) scale(1.04);
+    background: linear-gradient(140deg,#fff,#bceaff);
+    color: #145b8b;
+    box-shadow: 0 10px 25px #2479aa55;
+}
+
+.game-card .emoji {
+    font-size: 48px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(130px,1fr));
+    gap: 12px;
+}
+
+.stat-card {
+    background: #d9f1ff;
+    border-radius: 14px;
+    padding: 17px;
+}
+
+.stat-card strong {
+    font-size: 27px;
+    display: block;
+    color: #087bb9;
+}
+
+#ranking {
+    text-align: left;
+    background: #e5f5ff;
+    border-radius: 12px;
+    padding: 15px 25px;
+    line-height: 2;
+}
+
+.home-title {
+    text-align: left;
+    color: #167bb5;
+    margin-top: 35px;
+	
+.flag-image {
+    width: 240px;
+    height: 160px;
+    object-fit: contain;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px #0002;
+    margin: 20px auto;
+
+#grid2048 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+    width: min(340px, 100%);
+    margin: 20px auto;
+    padding: 9px;
+    background: #8caaa9;
+    border-radius: 12px;
+}
+
+.tile2048 {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #dce8df;
+    border-radius: 8px;
+    font-size: clamp(18px, 5vw, 30px);
+    font-weight: bold;
+}
+
+.tile2048[data-value="2"] {background:#eee4da;}
+.tile2048[data-value="4"] {background:#ede0c8;}
+.tile2048[data-value="8"] {background:#f2b179;}
+.tile2048[data-value="16"] {background:#f59563;}
+.tile2048[data-value="32"] {background:#f67c5f;}
+.tile2048[data-value="64"] {background:#f65e3b;}
+.tile2048[data-value="128"] {background:#edcf72;}
+.tile2048[data-value="256"] {background:#edcc61;}
+.tile2048[data-value="512"] {background:#edc850;}
+.tile2048[data-value="1024"] {background:#edc53f;}
+.tile2048[data-value="2048"] {background:#edc22e;}
+
+#mineBoard {
+    display: grid;
+    grid-template-columns: repeat(9, 35px);
+    gap: 3px;
+    justify-content: center;
+    margin: 20px auto;
+}
+
+.mine-cell {
+    width: 35px;
+    height: 35px;
+    border: 2px outset #aaa;
+    background: #9ccce5;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.mine-cell.revealed {
+    background: #e3f1f9;
+    border: 1px solid #a8c4d5;
+    cursor: default;
+}
+
+#arkanoidCanvas {
+    background: #101c30;
+    border: 4px solid #328bc1;
+    border-radius: 10px;
+    max-width: 100%;
+}
+
+#memoryBoard {
+    display: grid;
+    grid-template-columns: repeat(4, 75px);
+    gap: 10px;
+    justify-content: center;
+    margin: 25px auto;
+}
+
+.memory-card {
+    width: 75px;
+    height: 85px;
+    border: 0;
+    border-radius: 12px;
+    background: #168fd0;
+    color: white;
+    font-size: 33px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.memory-card:hover {
+    transform: scale(1.06);
+}
+
+.memory-card.open,
+.memory-card.matched {
+    background: #d3efff;
+    color: #176cae;
+}
+
+.memory-card.matched {
+    opacity: .5;
+}
+
+#reactionBox {
+    width: min(100%, 420px);
+    height: 220px;
+    border: none;
+    border-radius: 20px;
+    margin: 20px auto;
+    background: #e74c3c;
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+#reactionBox.ready {
+    background: #27ae60;
+}
+
+@media(max-width:450px) {
+    #mineBoard {
+        grid-template-columns: repeat(9, 30px);
+        gap: 2px;
+    }
+
+    .mine-cell {
+        width: 30px;
+        height: 30px;
+    }
+
+
+/* 2048 */
+#grid2048 {
+    width: 440px;
+    max-width: 100%;
+    gap: 12px;
+    padding: 15px;
+}
+
+.tile2048 {
+    font-size: 38px;
+}
+
+/* SAPER */
+#mineBoard {
+    grid-template-columns: repeat(9, 48px);
+    gap: 5px;
+}
+
+.mine-cell {
+    width: 48px;
+    height: 48px;
+    font-size: 23px;
+}
+
+/* ARKANOID */
+#arkanoidCanvas {
+    width: 700px;
+    max-width: 100%;
+    height: auto;
+}
+
+/* MEMORY */
+#memoryBoard {
+    grid-template-columns: repeat(4, 110px);
+    gap: 15px;
+}
+
+.memory-card {
+    width: 110px;
+    height: 120px;
+    font-size: 48px;
+}
+
+/* TEST REFLEKSU */
+#reactionBox {
+    width: min(600px, 100%);
+    height: 300px;
+    font-size: 38px;
+}
+
+/* WIĘKSZE NAPISY */
+#status2048,
+#mineStatus,
+#arkStatus,
+#memoryStatus,
+#reactionResult {
+    font-size: 23px;
+}
+
+@media(max-width: 500px) {
+    #mineBoard {
+        grid-template-columns: repeat(9, 32px);
+    }
+
+    .mine-cell {
+        width: 32px;
+        height: 32px;
+    }
+
+    #memoryBoard {
+        grid-template-columns: repeat(4, 65px);
+    }
+
+    .memory-card {
+        width: 65px;
+        height: 75px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="cloud c1"></div>
+<div class="cloud c2"></div>
+<div class="cloud c3"></div>
+
+<header>
+    <h1>☁ SkyGrojki</h1>
+    <p></p>
+</header>
+
+<nav>
+    <button class="active" onclick="showGame('home',this)">Główna</button>
+    <button onclick="showGame('tetris',this)">Tetris</button>
+    <button onclick="showGame('hangman',this)">Wisielec</button>
+    <button onclick="showGame('snake',this)">Snake</button>
+    <button onclick="showGame('tic',this)">Kółko i krzyżyk</button>
+    <button onclick="showGame('flags',this)">Quiz flagowy</button>
+	<button onclick="showGame('2048',this)">2048</button>
+<button onclick="showGame('mines',this)">Saper</button>
+<button onclick="showGame('arkanoid',this)">Arkanoid</button>
+<button onclick="showGame('memory',this)">Memory</button>
+<button onclick="showGame('reaction',this)">Test refleksu</button>
+</nav>
+
+<div class="container">
+<section id="home" class="game active">
+
+<h2>☁ Witaj w SkyGames!</h2>
+<p>Wybierz swoją ulubioną grę i bij rekordy!</p>
+
+<div class="home-grid">
+
+
+
+<div class="game-card" onclick="openGame('tetris')">
+<div class="emoji">🧱</div>
+<h3>Tetris</h3>
+<p>Układaj klocki</p>
+</div>
+
+<div class="game-card" onclick="openGame('hangman')">
+<div class="emoji">☠️</div>
+<h3>Wisielec</h3>
+<p>Odgaduj słowa</p>
+</div>
+
+<div class="game-card" onclick="openGame('snake')">
+<div class="emoji">🐍</div>
+<h3>Snake</h3>
+<p>Zbieraj punkty</p>
+</div>
+
+<div class="game-card" onclick="openGame('tic')">
+<div class="emoji">⭕</div>
+<h3>Kółko i krzyżyk</h3>
+<p>Pokonaj komputer</p>
+
+<div class="game-card" onclick="openGame('2048')">
+    <div class="emoji">🔢</div>
+    <h3>2048</h3>
+    <p>Łącz liczby</p>
+</div>
+
+<div class="game-card" onclick="openGame('mines')">
+    <div class="emoji">💣</div>
+    <h3>Saper</h3>
+    <p>Znajdź wszystkie bezpieczne pola</p>
+</div>
+
+<div class="game-card" onclick="openGame('arkanoid')">
+    <div class="emoji">🧱</div>
+    <h3>Arkanoid</h3>
+    <p>Niszcz klocki</p>
+</div>
+
+<div class="game-card" onclick="openGame('memory')">
+    <div class="emoji">🧠</div>
+    <h3>Memory</h3>
+    <p>Znajdź pary</p>
+</div>
+
+<div class="game-card" onclick="openGame('reaction')">
+    <div class="emoji">⚡</div>
+    <h3>Test refleksu</h3>
+    <p>Sprawdź swoją szybkość</p>
+
+</div>
+
+<div class="game-card" onclick="openGame('flags')">
+<div class="emoji">🌍</div>
+<h3>Quiz flagowy</h3>
+<p>Rozpoznawaj państwa</p>
+</div>
+
+</div>
+
+<h2 class="home-title">🏆 Twoje statystyki</h2>
+
+<div class="stats-grid">
+<div class="stat-card">Wygrane
+<strong id="totalWins">0</strong>
+</div>
+
+<div class="stat-card">Rozegrane gry
+<strong id="totalGames">0</strong>
+</div>
+
+<div class="stat-card">Najlepszy wynik
+<strong id="bestScore">0</strong>
+</div>
+</div>
+
+<h2 class="home-title">🥇 Ranking rekordów</h2>
+<div id="ranking"></div>
+
+</section>
+
+<!-- TETRIS -->
+
+<section id="tetris" class="game active">
+    <h2>🧱 Tetris</h2>
+    <p>Układaj klocki i zdobywaj punkty!</p>
+    <div class="info">Wynik: <span id="tScore">0</span></div>
+    <canvas id="tetrisCanvas" width="300" height="600"></canvas>
+    <p class="controls">⬅ ➡ Poruszanie | ⬇ Przyspieszenie | ↑ Obrót</p>
+    <button class="action" onclick="startTetris()">Nowa gra</button>
+    <p id="tStatus"></p>
+</section>
+
+<!-- WISIELEC -->
+
+<section id="hangman" class="game">
+    <h2>☠ Wisielec</h2>
+    <p>Odgadnij ukryte słowo!</p>
+    <div id="hangmanDrawing"> +---+
+ |   |
+     |
+     |
+     |
+=======</div>
+    <div class="info" id="word"></div>
+    <p>Pozostałe próby: <span id="tries">6</span></p>
+    <div id="letters"></div>
+    <p id="hStatus"></p>
+    <button class="action" onclick="newHangman()">Nowe słowo</button>
+</section>
+
+<!-- SNAKE -->
+
+<section id="snake" class="game">
+    <h2>🐍 Snake</h2>
+    <p>Zbieraj jedzenie i nie uderz w ścianę!</p>
+    <div class="info">Wynik: <span id="sScore">0</span></div>
+    <canvas id="snakeCanvas" width="400" height="400"></canvas>
+    <p class="controls">Sterowanie: strzałki na klawiaturze</p>
+    <button class="action" onclick="startSnake()">Nowa gra</button>
+    <p id="sStatus"></p>
+</section>
+
+<!-- KÓŁKO I KRZYŻYK -->
+
+<section id="tic" class="game">
+    <h2>⭕ Kółko i krzyżyk</h2>
+    <p>Ty grasz jako X, komputer jako O</p>
+    <div class="info" id="ticStatus">Twój ruch!</div>
+    <div id="board"></div>
+    <button class="action" onclick="newTic()">Nowa gra</button>
+</section>
+
+<!-- QUIZ FLAGOWY -->
+
+<section id="flags" class="game">
+    <h2>🌍 Quiz flagowy</h2>
+    <p>Rozpoznaj państwo na podstawie flagi!</p>
+    <div id="flag">🇵🇱</div>
+    <input id="flagInput" placeholder="Wpisz nazwę państwa">
+    <br><br>
+    <button class="action" onclick="checkFlag()">Sprawdź</button>
+    <button class="action" onclick="newFlag()">Następna flaga</button>
+    <div class="info">Punkty: <span id="fScore">0</span></div>
+    <p id="fStatus"></p>
+</section>
+	
+<!-- 2048 -->
+
+<section id="2048" class="game">
+    <h2>🔢 2048</h2>
+    <p>Łącz takie same liczby i zdobądź 2048!</p>
+
+    <div class="info">
+        Wynik: <span id="score2048">0</span>
+    </div>
+
+    <div id="grid2048"></div>
+
+    <p>Sterowanie: strzałki na klawiaturze</p>
+    <button class="action" onclick="start2048()">Nowa gra</button>
+    <p id="status2048"></p>
+</section>
+
+<!-- SAPER -->
+
+<section id="mines" class="game">
+    <h2>💣 Saper</h2>
+    <p>Odkrywaj pola i unikaj min!</p>
+
+    <div class="info">
+        Pozostałe miny: <span id="mineCount">10</span>
+    </div>
+
+    <div id="mineBoard"></div>
+
+    <p>Kliknij, aby odkryć pole. Prawym przyciskiem oznacz minę.</p>
+    <button class="action" onclick="startMinesweeper()">Nowa gra</button>
+    <p id="mineStatus"></p>
+</section>
+
+<!-- ARKANOID -->
+
+<section id="arkanoid" class="game">
+    <h2>🧱 Arkanoid</h2>
+    <p>Niszcz klocki i odbijaj piłkę!</p>
+
+    <div class="info">
+        Punkty: <span id="arkScore">0</span>
+    </div>
+
+    <canvas id="arkanoidCanvas" width="480" height="320"></canvas>
+
+    <p>Sterowanie: strzałki lewo i prawo</p>
+    <button class="action" onclick="startArkanoid()">Nowa gra</button>
+    <p id="arkStatus"></p>
+</section>
+
+<!-- MEMORY -->
+
+<section id="memory" class="game">
+    <h2>🧠 Memory</h2>
+    <p>Znajdź wszystkie pasujące pary!</p>
+
+    <div class="info">
+        Ruchy: <span id="memoryMoves">0</span>
+    </div>
+
+    <div id="memoryBoard"></div>
+
+    <p id="memoryStatus"></p>
+    <button class="action" onclick="startMemory()">Nowa gra</button>
+</section>
+
+<!-- TEST REFLEKSU -->
+
+<section id="reaction" class="game">
+    <h2>⚡ Test refleksu</h2>
+    <p>Kliknij przycisk, aby rozpocząć. Poczekaj na zielony kolor!</p>
+
+    <button id="reactionBox" onclick="handleReaction()">
+        ROZPOCZNIJ
+    </button>
+
+    <div class="info" id="reactionResult">
+        Twój czas: brak
+    </div>
+
+    <p>Twój rekord: <span id="reactionBest">--</span></p>	
+
+</section>
+
+</div>
+
+<footer>
+    SkyGames © 2026 | By gacper123
+</footer>
+
+<script>
+
+/* MENU */
+
+let currentGame = "tetris";
+
+function showGame(id,button) {
+    if(currentGame === "tetris") stopTetris();
+    if(currentGame === "snake") stopSnake();
+
+    currentGame = id;
+
+    document.querySelectorAll(".game").forEach(g =>
+        g.classList.remove("active")
+    );
+
+    document.getElementById(id).classList.add("active");
+
+    document.querySelectorAll("nav button").forEach(b =>
+        b.classList.remove("active")
+    );
+
+    button.classList.add("active");
+}
+
+/* TETRIS */
+
+const tc = document.getElementById("tetrisCanvas");
+const ctx = tc.getContext("2d");
+
+const COLS = 10, ROWS = 20, SIZE = 30;
+
+const shapes = [
+    [[1,1,1,1]],
+    [[1,1],[1,1]],
+    [[0,1,0],[1,1,1]],
+    [[1,0,0],[1,1,1]],
+    [[0,0,1],[1,1,1]],
+    [[1,1,0],[0,1,1]],
+    [[0,1,1],[1,1,0]]
+];
+
+const colors = ["#37d8ef","#ffe14d","#bb68ed",
+                "#3988ff","#ff963b","#57df80","#ef5266"];
+
+let grid, piece, score, timer, running=false;
+
+function newGrid() {
+    return Array.from({length:ROWS},()=>Array(COLS).fill(0));
+}
+
+function randomPiece() {
+    let i = Math.floor(Math.random()*shapes.length);
+    return {
+        shape: shapes[i].map(r=>[...r]),
+        color: colors[i],
+        x: 3, y: 0
+    };
+}
+
+function startTetris() {
+    clearInterval(timer);
+    grid = newGrid();
+    score = 0;
+    running = true;
+    document.getElementById("tScore").textContent = 0;
+    document.getElementById("tStatus").textContent = "";
+    piece = randomPiece();
+    drawTetris();
+    timer = setInterval(tetrisStep,500);
+}
+
+function stopTetris() {
+    running = false;
+    clearInterval(timer);
+}
+
+function collision(p) {
+    for(let y=0;y<p.shape.length;y++)
+        for(let x=0;x<p.shape[y].length;x++)
+            if(p.shape[y][x]) {
+                let nx=p.x+x, ny=p.y+y;
+                if(nx<0 || nx>=COLS || ny>=ROWS ||
+                   (ny>=0 && grid[ny][nx])) return true;
+            }
+    return false;
+}
+
+function lockPiece() {
+    piece.shape.forEach((row,y)=>row.forEach((v,x)=>{
+        if(v && piece.y+y>=0)
+            grid[piece.y+y][piece.x+x]=piece.color;
+    }));
+
+    for(let y=ROWS-1;y>=0;y--) {
+        if(grid[y].every(v=>v)) {
+            grid.splice(y,1);
+            grid.unshift(Array(COLS).fill(0));
+            score+=100;
+            y++;
+        }
+    }
+
+    document.getElementById("tScore").textContent=score;
+    piece=randomPiece();
+
+    if(collision(piece)) {
+        running=false;
+        clearInterval(timer);
+        document.getElementById("tStatus").textContent="Koniec gry!";
+    }
+}
+
+function drawTetris() {
+    ctx.fillStyle="#101c30";
+    ctx.fillRect(0,0,300,600);
+
+    grid.forEach((row,y)=>row.forEach((v,x)=>{
+        if(v) {
+            ctx.fillStyle=v;
+            ctx.fillRect(x*SIZE,y*SIZE,SIZE-1,SIZE-1);
+        }
+    }));
+
+    piece.shape.forEach((row,y)=>row.forEach((v,x)=>{
+        if(v) {
+            ctx.fillStyle=piece.color;
+            ctx.fillRect((piece.x+x)*SIZE,
+                         (piece.y+y)*SIZE,SIZE-1,SIZE-1);
+        }
+    }));
+}
+
+function tetrisStep() {
+    piece.y++;
+    if(collision(piece)) {
+        piece.y--;
+        lockPiece();
+    }
+    drawTetris();
+}
+
+document.addEventListener("keydown",e=>{
+    if(currentGame==="tetris" && running) {
+        if(["ArrowLeft","ArrowRight","ArrowDown","ArrowUp"].includes(e.key))
+            e.preventDefault();
+
+        if(e.key==="ArrowLeft") {
+            piece.x--;
+            if(collision(piece)) piece.x++;
+        }
+        if(e.key==="ArrowRight") {
+            piece.x++;
+            if(collision(piece)) piece.x--;
+        }
+        if(e.key==="ArrowDown") tetrisStep();
+
+        if(e.key==="ArrowUp") {
+            let old=piece.shape;
+            piece.shape=old[0].map((_,i)=>old.map(r=>r[i]).reverse());
+            if(collision(piece)) piece.shape=old;
+        }
+        drawTetris();
+    }
+});
+
+startTetris();
+
+
+/* WISIELEC */
+
+const words=["KOMPUTER","TELEWIZOR","SAMOCHOD",
+"INTERNET","PIŁKARZ","PROGRAM","KLAWIATURA",
+"JABŁKO","SZKOŁA","TELEFON","KSIĄŻKA"];
+
+let secret, guessed, mistakes, finished=false;
+
+function newHangman() {
+    secret=words[Math.floor(Math.random()*words.length)];
+    guessed=[];
+    mistakes=0;
+    finished=false;
+    document.getElementById("hStatus").textContent="";
+    makeLetters();
+    updateHangman();
+}
+
+function makeLetters() {
+    const box=document.getElementById("letters");
+    box.innerHTML="";
+    "AĄBCĆDEĘFGHIJKLŁMNŃOÓPRSŚTUWYZŹŻ".split("").forEach(letter=>{
+        let b=document.createElement("button");
+        b.textContent=letter;
+        b.onclick=()=>guessLetter(letter,b);
+        box.appendChild(b);
+    });
+}
+
+function guessLetter(letter,b) {
+    if(finished)return;
+    b.disabled=true;
+    guessed.push(letter);
+
+    if(!secret.includes(letter)) mistakes++;
+
+    updateHangman();
+}
+
+function updateHangman() {
+    document.getElementById("word").textContent=
+        secret.split("").map(l=>guessed.includes(l)?l:"_").join(" ");
+
+    document.getElementById("tries").textContent=10-mistakes;
+
+    const drawings=[
+` +---+
+ |   |
+     |
+     |
+     |
+=======`,
+` +---+
+ |   |
+ O   |
+     |
+     |
+=======`,
+` +---+
+ |   |
+ O   |
+ |   |
+     |
+=======`,
+` +---+
+ |   |
+ O   |
+/|   |
+     |
+=======`,
+` +---+
+ |   |
+ O   |
+/|\\  |
+     |
+=======`,
+` +---+
+ |   |
+ O   |
+/|\\  |
+/    |
+=======`,
+` +---+
+ |   |
+ O   |
+/|\\  |
+/ \\  |
+=======`
+    ];
+
+    document.getElementById("hangmanDrawing").textContent=drawings[mistakes];
+
+    if(mistakes>=10) {
+        finished=true;
+        document.getElementById("hStatus").textContent=
+            "Przegrana! Hasło: "+secret;
+    } else if(secret.split("").every(l=>guessed.includes(l))) {
+        finished=true;
+        document.getElementById("hStatus").textContent="Brawo! Wygrałeś!";
+    }
+}
+
+newHangman();
+
+/* SNAKE */
+
+const sc=document.getElementById("snakeCanvas");
+const sctx=sc.getContext("2d");
+
+let snake,food,dx,dy,sScore,sTimer,sRunning=false;
+
+function startSnake() {
+    clearInterval(sTimer);
+    snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+    dx=1; dy=0;
+    sScore=0;
+    sRunning=true;
+    document.getElementById("sScore").textContent=0;
+    document.getElementById("sStatus").textContent="";
+    placeFood();
+    drawSnake();
+    sTimer=setInterval(snakeStep,110);
+}
+
+function stopSnake() {
+    sRunning=false;
+    clearInterval(sTimer);
+}
+
+function placeFood() {
+    do {
+        food={x:Math.floor(Math.random()*20),
+              y:Math.floor(Math.random()*20)};
+    } while(snake.some(p=>p.x===food.x && p.y===food.y));
+}
+
+function drawSnake() {
+    sctx.fillStyle="#142c32";
+    sctx.fillRect(0,0,400,400);
+
+    sctx.fillStyle="#ff4b4b";
+    sctx.fillRect(food.x*20,food.y*20,18,18);
+
+    snake.forEach((p,i)=>{
+        sctx.fillStyle=i===0?"#a3ff67":"#39c76d";
+        sctx.fillRect(p.x*20,p.y*20,18,18);
+    });
+}
+
+function snakeStep() {
+    let head={x:snake[0].x+dx,y:snake[0].y+dy};
+
+    let eating=head.x===food.x && head.y===food.y;
+    let body=eating?snake:snake.slice(0,-1);
+
+    if(head.x<0||head.x>=20||head.y<0||head.y>=20||
+       body.some(p=>p.x===head.x&&p.y===head.y)) {
+        stopSnake();
+        document.getElementById("sStatus").textContent=
+            "Koniec gry! Twój wynik: "+sScore;
+        return;
+    }
+
+    snake.unshift(head);
+
+    if(eating) {
+        sScore+=10;
+        document.getElementById("sScore").textContent=sScore;
+        placeFood();
+    } else snake.pop();
+
+    drawSnake();
+}
+
+document.addEventListener("keydown",e=>{
+    if(currentGame!=="snake"||!sRunning)return;
+
+    const keys=["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"];
+    if(keys.includes(e.key))e.preventDefault();
+
+    if(e.key==="ArrowUp"&&dy!==1){dx=0;dy=-1;}
+    if(e.key==="ArrowDown"&&dy!==-1){dx=0;dy=1;}
+    if(e.key==="ArrowLeft"&&dx!==1){dx=-1;dy=0;}
+    if(e.key==="ArrowRight"&&dx!==-1){dx=1;dy=0;}
+});
+
+startSnake();
+
+
+/* KÓŁKO I KRZYŻYK */
+
+let cells, ticOver=false;
+
+function newTic() {
+    cells=Array(9).fill("");
+    ticOver=false;
+    document.getElementById("ticStatus").textContent="Twój ruch!";
+    renderTic();
+}
+
+function renderTic() {
+    const board=document.getElementById("board");
+    board.innerHTML="";
+
+    cells.forEach((value,i)=>{
+        let b=document.createElement("button");
+        b.className="cell";
+        b.textContent=value;
+        b.onclick=()=>ticMove(i);
+        board.appendChild(b);
+    });
+}
+
+const wins=[
+[0,1,2],[3,4,5],[6,7,8],
+[0,3,6],[1,4,7],[2,5,8],
+[0,4,8],[2,4,6]
+];
+
+function getWinner() {
+    for(let line of wins) {
+        if(cells[line[0]] &&
+           cells[line[0]]===cells[line[1]] &&
+           cells[line[1]]===cells[line[2]])
+            return cells[line[0]];
+    }
+    return "";
+}
+
+function ticMove(i) {
+    if(ticOver||cells[i])return;
+
+    cells[i]="X";
+    renderTic();
+
+    if(getWinner()) {
+        ticEnd("Wygrałeś!");
+        return;
+    }
+
+    if(cells.every(Boolean)) {
+        ticEnd("Remis!");
+        return;
+    }
+
+    document.getElementById("ticStatus").textContent="Ruch komputera...";
+
+    setTimeout(()=>{
+        if(ticOver)return;
+
+        let available=cells.map((v,i)=>v?null:i).filter(v=>v!==null);
+        let move=available[Math.floor(Math.random()*available.length)];
+
+        cells[move]="O";
+        renderTic();
+
+        if(getWinner())ticEnd("Komputer wygrał!");
+        else if(cells.every(Boolean))ticEnd("Remis!");
+        else document.getElementById("ticStatus").textContent="Twój ruch!";
+    },450);
+}
+
+function ticEnd(msg) {
+    ticOver=true;
+    document.getElementById("ticStatus").textContent=msg;
+}
+
+newTic();
+
+/* QUIZ FLAGOWY */
+
+const countries = [
+["pl","Polska"],["de","Niemcy"],
+["fr","Francja"],["it","Włochy"],
+["es","Hiszpania"],["gb","Wielka Brytania"],
+["us","Stany Zjednoczone"],["jp","Japonia"],
+["br","Brazylia"],["ca","Kanada"],
+["ua","Ukraina"],["cz","Czechy"],
+["sk","Słowacja"],["no","Norwegia"],
+["se","Szwecja"],["gr","Grecja"],
+["tr","Turcja"],["au","Australia"],
+["cn","Chiny"],["mx","Meksyk"],
+["pt","Portugalia"],["nl","Holandia"],
+["ie","Irlandia"],["ar","Argentyna"],
+["kr","Korea Południowa"],["in","Indie"]
+];
+
+let flagIndex=0, fScore=0, answered=false;
+
+function newFlag() {
+    flagIndex = Math.floor(Math.random() * countries.length);
+
+    const code = countries[flagIndex][0];
+
+    document.getElementById("flag").innerHTML =
+        `<img class="flag-image"
+        src="https://flagcdn.com/w320/${code}.png"
+        alt="Flaga do odgadnięcia">`;
+
+    document.getElementById("flagInput").value = "";
+    document.getElementById("fStatus").textContent = "";
+    answered = false;
+}
+
+function checkFlag() {
+    if(answered)return;
+
+    let answer=document.getElementById("flagInput").value
+        .trim().toLowerCase();
+
+    if(!answer)return;
+
+    if(answer===countries[flagIndex][1].toLowerCase()) {
+        fScore++;
+        document.getElementById("fScore").textContent=fScore;
+        document.getElementById("fStatus").textContent="Dobrze! Brawo!";
+    } else {
+        document.getElementById("fStatus").textContent=
+            "Niepoprawnie! To "+countries[flagIndex][1];
+    }
+
+    answered=true;
+}
+
+document.getElementById("flagInput").addEventListener("keydown",e=>{
+    if(e.key==="Enter")checkFlag();
+});
+
+newFlag();
+
+/* SYSTEM STATYSTYK SKY GAMES */
+
+let stats = JSON.parse(
+    localStorage.getItem("skyGamesStats")
+) || {
+    wins: 0,
+    games: 0,
+    records: {
+        Tetris: 0,
+        Snake: 0,
+        "Quiz flagowy": 0
+    }
+};
+
+function saveStats() {
+    localStorage.setItem(
+        "skyGamesStats",
+        JSON.stringify(stats)
+    );
+    updateStats();
+}
+
+function recordWin() {
+    stats.wins++;
+    stats.games++;
+    saveStats();
+}
+
+function recordLoss() {
+    stats.games++;
+    saveStats();
+}
+
+function recordScore(game,score) {
+    if(score > (stats.records[game] || 0)) {
+        stats.records[game] = score;
+    }
+    saveStats();
+}
+
+function updateStats() {
+    document.getElementById("totalWins").textContent =
+        stats.wins;
+
+    document.getElementById("totalGames").textContent =
+        stats.games;
+
+    document.getElementById("bestScore").textContent =
+        Math.max(0,...Object.values(stats.records));
+
+    document.getElementById("ranking").innerHTML =
+        Object.entries(stats.records)
+        .sort((a,b)=>b[1]-a[1])
+        .map((item,i)=>
+            `<div>${i+1}. <b>${item[0]}</b> : ${item[1]} pkt</div>`
+        ).join("");
+}
+
+
+
+updateStats();
+
+/* =================================
+   NAWIGACJA NOWYCH GIER
+================================= */
+
+
+function showGame(id, button) {
+    if (currentGame === "tetris") stopTetris();
+    if (currentGame === "snake") stopSnake();
+    if (currentGame === "arkanoid") stopArkanoid();
+    if (currentGame === "reaction") stopReaction();
+
+    currentGame = id;
+
+    document.querySelectorAll(".game").forEach(g =>
+        g.classList.remove("active")
+    );
+
+    document.getElementById(id).classList.add("active");
+
+    document.querySelectorAll("nav button").forEach(b =>
+        b.classList.remove("active")
+    );
+
+    button.classList.add("active");
+}
+
+function openGame(id) {
+    const indexes = {
+        home: 0,
+        tetris: 1,
+        hangman: 2,
+        snake: 3,
+        tic: 4,
+        flags: 5,
+        "2048": 6,
+        mines: 7,
+        arkanoid: 8,
+        memory: 9,
+        reaction: 10
+    };
+
+    showGame(id, document.querySelectorAll("nav button")[indexes[id]]);
+}
+
+
+/* =================================
+   GRA 2048
+================================= */
+
+let board2048 = [];
+let score2048 = 0;
+let over2048 = false;
+
+function start2048() {
+    board2048 = Array.from({length: 4}, () => Array(4).fill(0));
+    score2048 = 0;
+    over2048 = false;
+
+    spawn2048();
+    spawn2048();
+
+    document.getElementById("status2048").textContent = "";
+    draw2048();
+}
+
+function spawn2048() {
+    let empty = [];
+
+    board2048.forEach((row, y) => row.forEach((v, x) => {
+        if (v === 0) empty.push({x, y});
+    }));
+
+    if (!empty.length) return;
+
+    let cell = empty[Math.floor(Math.random() * empty.length)];
+
+    board2048[cell.y][cell.x] = Math.random() < 0.9 ? 2 : 4;
+}
+
+function draw2048() {
+    const box = document.getElementById("grid2048");
+    box.innerHTML = "";
+
+    board2048.forEach(row => {
+        row.forEach(value => {
+            let tile = document.createElement("div");
+            tile.className = "tile2048";
+            tile.dataset.value = value;
+            tile.textContent = value || "";
+            box.appendChild(tile);
+        });
+    });
+
+    document.getElementById("score2048").textContent = score2048;
+}
+
+function transpose2048(matrix) {
+    return matrix[0].map((_, i) => matrix.map(row => row[i]));
+}
+
+function move2048(direction) {
+    if (over2048 || currentGame !== "2048") return;
+
+    let old = JSON.stringify(board2048);
+    let vertical = direction === "up" || direction === "down";
+    let reverse = direction === "right" || direction === "down";
+
+    let working = board2048.map(row => [...row]);
+
+    if (vertical) working = transpose2048(working);
+    if (reverse) working = working.map(row => row.reverse());
+
+    working = working.map(row => {
+        let values = row.filter(v => v !== 0);
+        let result = [];
+
+        for (let i = 0; i < values.length; i++) {
+            if (values[i] === values[i + 1]) {
+                let doubled = values[i] * 2;
+                result.push(doubled);
+                score2048 += doubled;
+                i++;
+            } else {
+                result.push(values[i]);
+            }
+        }
+
+        while (result.length < 4) result.push(0);
+        return result;
+    });
+
+    if (reverse) working = working.map(row => row.reverse());
+    if (vertical) working = transpose2048(working);
+
+    board2048 = working;
+
+    if (old !== JSON.stringify(board2048)) {
+        spawn2048();
+        recordScore("2048", score2048);
+    }
+
+    draw2048();
+
+    if (board2048.some(row => row.includes(2048))) {
+        document.getElementById("status2048").textContent =
+            "Brawo! Zdobyłeś 2048!";
+    }
+
+    check2048();
+}
+
+function check2048() {
+    let possible = false;
+
+    for (let y = 0; y < 4; y++) {
+        for (let x = 0; x < 4; x++) {
+            if (board2048[y][x] === 0) possible = true;
+
+            if (x < 3 && board2048[y][x] === board2048[y][x + 1])
+                possible = true;
+
+            if (y < 3 && board2048[y][x] === board2048[y + 1][x])
+                possible = true;
+        }
+    }
+
+    if (!possible && !over2048) {
+        over2048 = true;
+        document.getElementById("status2048").textContent =
+            "Koniec gry! Wynik: " + score2048;
+        recordLoss();
+    }
+}
+
+document.addEventListener("keydown", e => {
+    if (currentGame !== "2048") return;
+
+    const keys = {
+        ArrowLeft: "left",
+        ArrowRight: "right",
+        ArrowUp: "up",
+        ArrowDown: "down"
+    };
+
+    if (keys[e.key]) {
+        e.preventDefault();
+        move2048(keys[e.key]);
+    }
+});
+
+start2048();
+
+
+/* =================================
+   SAPER
+================================= */
+
+const mineSize = 9;
+const mineTotal = 10;
+
+let mineCells = [];
+let mineOver = false;
+let mineFlags = 0;
+let mineRevealed = 0;
+
+function startMinesweeper() {
+    mineCells = [];
+    mineOver = false;
+    mineFlags = 0;
+    mineRevealed = 0;
+
+    for (let y = 0; y < mineSize; y++) {
+        mineCells[y] = [];
+
+        for (let x = 0; x < mineSize; x++) {
+            mineCells[y][x] = {
+                mine: false,
+                count: 0,
+                revealed: false,
+                flagged: false
+            };
+        }
+    }
+
+    let placed = 0;
+
+    while (placed < mineTotal) {
+        let x = Math.floor(Math.random() * mineSize);
+        let y = Math.floor(Math.random() * mineSize);
+
+        if (!mineCells[y][x].mine) {
+            mineCells[y][x].mine = true;
+            placed++;
+        }
+    }
+
+    for (let y = 0; y < mineSize; y++) {
+        for (let x = 0; x < mineSize; x++) {
+            let count = 0;
+
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    let ny = y + dy;
+                    let nx = x + dx;
+
+                    if (ny >= 0 && ny < mineSize &&
+                        nx >= 0 && nx < mineSize &&
+                        mineCells[ny][nx].mine) count++;
+                }
+            }
+
+            mineCells[y][x].count = count;
+        }
+    }
+
+    document.getElementById("mineStatus").textContent = "";
+    drawMines();
+}
+
+function drawMines() {
+    const board = document.getElementById("mineBoard");
+    board.innerHTML = "";
+
+    mineCells.forEach((row, y) => {
+        row.forEach((cell, x) => {
+            let button = document.createElement("button");
+            button.className = "mine-cell";
+
+            if (cell.revealed) {
+                button.classList.add("revealed");
+
+                if (cell.mine) {
+                    button.textContent = "💣";
+                } else {
+                    button.textContent = cell.count || "";
+                    button.style.color = "#167bb5";
+                }
+            } else if (cell.flagged) {
+                button.textContent = "🚩";
+            }
+
+            button.onclick = () => revealMine(x, y);
+
+            button.oncontextmenu = e => {
+                e.preventDefault();
+                toggleFlag(x, y);
+            };
+
+            board.appendChild(button);
+        });
+    });
+
+    document.getElementById("mineCount").textContent =
+        mineTotal - mineFlags;
+}
+
+function toggleFlag(x, y) {
+    if (mineOver) return;
+
+    let cell = mineCells[y][x];
+
+    if (cell.revealed) return;
+
+    cell.flagged = !cell.flagged;
+    mineFlags += cell.flagged ? 1 : -1;
+
+    drawMines();
+}
+
+function revealMine(x, y) {
+    if (mineOver || currentGame !== "mines") return;
+
+    let cell = mineCells[y][x];
+
+    if (cell.revealed || cell.flagged) return;
+
+    cell.revealed = true;
+
+    if (cell.mine) {
+        mineOver = true;
+        mineCells.flat().forEach(c => {
+            if (c.mine) c.revealed = true;
+        });
+
+        document.getElementById("mineStatus").textContent =
+            "Bum! Trafiłeś na minę. Spróbuj ponownie!";
+
+        drawMines();
+        recordLoss();
+        return;
+    }
+
+    mineRevealed++;
+
+    if (cell.count === 0) {
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+                let nx = x + dx;
+                let ny = y + dy;
+
+                if (nx >= 0 && nx < mineSize &&
+                    ny >= 0 && ny < mineSize) {
+                    revealMine(nx, ny);
+                }
+            }
+        }
+    }
+
+    drawMines();
+
+    if (mineRevealed === mineSize * mineSize - mineTotal) {
+        mineOver = true;
+
+        document.getElementById("mineStatus").textContent =
+            "Brawo! Odkryłeś wszystkie bezpieczne pola!";
+
+        recordWin();
+    }
+}
+
+startMinesweeper();
+
+
+/* =================================
+   ARKANOID
+================================= */
+
+const arkCanvas = document.getElementById("arkanoidCanvas");
+const arkCtx = arkCanvas.getContext("2d");
+
+let arkPaddle;
+let arkBall;
+let arkBricks = [];
+let arkScore = 0;
+let arkRunning = false;
+let arkFrame = null;
+
+function startArkanoid() {
+    stopArkanoid();
+
+    arkScore = 0;
+    arkPaddle = {x: 190, y: 292, width: 100, height: 10};
+    arkBall = {x: 240, y: 260, dx: 3, dy: -3, radius: 7};
+
+    arkBricks = [];
+
+    for (let y = 0; y < 4; y++) {
+        for (let x = 0; x < 8; x++) {
+            arkBricks.push({
+                x: 20 + x * 56,
+                y: 35 + y * 24,
+                width: 48,
+                height: 15,
+                alive: true
+            });
+        }
+    }
+
+    document.getElementById("arkScore").textContent = 0;
+    document.getElementById("arkStatus").textContent = "";
+
+    arkRunning = true;
+    arkDraw();
+}
+
+function stopArkanoid() {
+    arkRunning = false;
+    if (arkFrame !== null) cancelAnimationFrame(arkFrame);
+    arkFrame = null;
+}
+
+function arkDraw() {
+    arkCtx.fillStyle = "#101c30";
+    arkCtx.fillRect(0, 0, 480, 320);
+
+    arkBricks.forEach((brick, i) => {
+        if (!brick.alive) return;
+
+        arkCtx.fillStyle = ["#e95f65", "#f6a340", "#42c7a4", "#438fe5"][Math.floor(i / 8)];
+        arkCtx.fillRect(brick.x, brick.y, brick.width, brick.height);
+    });
+
+    arkCtx.fillStyle = "#4bd8ff";
+    arkCtx.fillRect(
+        arkPaddle.x, arkPaddle.y,
+        arkPaddle.width, arkPaddle.height
+    );
+
+    arkCtx.beginPath();
+    arkCtx.arc(arkBall.x, arkBall.y, arkBall.radius, 0, Math.PI * 2);
+    arkCtx.fillStyle = "white";
+    arkCtx.fill();
+}
+
+function arkLoop() {
+    if (!arkRunning || currentGame !== "arkanoid") return;
+
+    arkBall.x += arkBall.dx;
+    arkBall.y += arkBall.dy;
+
+    if (arkBall.x < arkBall.radius || arkBall.x > 480 - arkBall.radius)
+        arkBall.dx *= -1;
+
+    if (arkBall.y < arkBall.radius)
+        arkBall.dy *= -1;
+
+    if (arkBall.y + arkBall.radius >= arkPaddle.y &&
+        arkBall.y - arkBall.radius <= arkPaddle.y + arkPaddle.height &&
+        arkBall.x >= arkPaddle.x &&
+        arkBall.x <= arkPaddle.x + arkPaddle.width &&
+        arkBall.dy > 0) {
+
+        arkBall.dy = -Math.abs(arkBall.dy);
+        let hit = (arkBall.x - (arkPaddle.x + arkPaddle.width / 2)) /
+                  (arkPaddle.width / 2);
+        arkBall.dx = hit * 4;
+    }
+
+    for (let brick of arkBricks) {
+        if (brick.alive &&
+            arkBall.x + arkBall.radius > brick.x &&
+            arkBall.x - arkBall.radius < brick.x + brick.width &&
+            arkBall.y + arkBall.radius > brick.y &&
+            arkBall.y - arkBall.radius < brick.y + brick.height) {
+
+            brick.alive = false;
+            arkBall.dy *= -1;
+            arkScore += 10;
+
+            document.getElementById("arkScore").textContent = arkScore;
+            recordScore("Arkanoid", arkScore);
+            break;
+        }
+    }
+
+    if (!arkBricks.some(b => b.alive)) {
+        arkRunning = false;
+        document.getElementById("arkStatus").textContent =
+            "Wygrałeś! Wszystkie klocki zniszczone!";
+        recordWin();
+        return;
+    }
+
+    if (arkBall.y > 330) {
+        arkRunning = false;
+        document.getElementById("arkStatus").textContent =
+            "Koniec gry! Wynik: " + arkScore;
+        recordLoss();
+        return;
+    }
+
+    arkDraw();
+    arkFrame = requestAnimationFrame(arkLoop);
+}
+
+function arkStartLoop() {
+    arkDraw();
+    arkFrame = requestAnimationFrame(arkLoop);
+}
+
+function arkanoidMove(dir) {
+    if (!arkRunning) return;
+
+    arkPaddle.x += dir * 22;
+    arkPaddle.x = Math.max(0,
+        Math.min(480 - arkPaddle.width, arkPaddle.x));
+    arkDraw();
+}
+
+document.addEventListener("keydown", e => {
+    if (currentGame !== "arkanoid") return;
+
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        arkanoidMove(e.key === "ArrowLeft" ? -1 : 1);
+    }
+});
+
+arkCanvas.addEventListener("mousemove", e => {
+    if (!arkRunning || currentGame !== "arkanoid") return;
+
+    const rect = arkCanvas.getBoundingClientRect();
+    let mouseX = (e.clientX - rect.left) * (480 / rect.width);
+
+    arkPaddle.x = Math.max(0,
+        Math.min(480 - arkPaddle.width, mouseX - arkPaddle.width / 2));
+
+    arkDraw();
+});
+
+// Uruchom pętlę po przygotowaniu gry
+const originalStartArkanoid = startArkanoid;
+startArkanoid = function() {
+    originalStartArkanoid();
+    arkStartLoop();
+};
+
+
+/* =================================
+   MEMORY
+================================= */
+
+const memorySymbols = [
+    "🍎", "🍌", "🍇", "🍓",
+    "🚗", "⚽", "🎮", "⭐"
+];
+
+let memoryCards = [];
+let memoryFirst = null;
+let memoryLocked = false;
+let memoryMoves = 0;
+let memoryMatches = 0;
+let memoryTimer = null;
+
+function startMemory() {
+    clearTimeout(memoryTimer);
+
+    memoryCards = [...memorySymbols, ...memorySymbols]
+        .sort(() => Math.random() - 0.5)
+        .map((symbol, index) => ({
+            id: index,
+            symbol,
+            open: false,
+            matched: false
+        }));
+
+    memoryFirst = null;
+    memoryLocked = false;
+    memoryMoves = 0;
+    memoryMatches = 0;
+
+    document.getElementById("memoryMoves").textContent = 0;
+    document.getElementById("memoryStatus").textContent = "";
+
+    drawMemory();
+}
+
+function drawMemory() {
+    const board = document.getElementById("memoryBoard");
+    board.innerHTML = "";
+
+    memoryCards.forEach(card => {
+        let button = document.createElement("button");
+
+        button.className = "memory-card";
+
+        if (card.matched) button.classList.add("matched");
+        else if (card.open) button.classList.add("open");
+
+        button.textContent =
+            card.open || card.matched ? card.symbol : "?";
+
+        button.onclick = () => flipMemory(card.id);
+
+        board.appendChild(button);
+    });
+}
+
+function flipMemory(id) {
+    if (memoryLocked || currentGame !== "memory") return;
+
+    let card = memoryCards[id];
+
+    if (card.open || card.matched) return;
+
+    card.open = true;
+
+    if (memoryFirst === null) {
+        memoryFirst = id;
+        drawMemory();
+        return;
+    }
+
+    memoryMoves++;
+    document.getElementById("memoryMoves").textContent = memoryMoves;
+
+    let first = memoryCards[memoryFirst];
+
+    if (first.symbol === card.symbol) {
+        first.matched = true;
+        card.matched = true;
+        memoryFirst = null;
+        memoryMatches++;
+        drawMemory();
+
+        if (memoryMatches === memorySymbols.length) {
+            document.getElementById("memoryStatus").textContent =
+                "Brawo! Znalazłeś wszystkie pary!";
+
+            recordWin();
+        }
+    } else {
+        memoryLocked = true;
+        drawMemory();
+
+        memoryTimer = setTimeout(() => {
+            first.open = false;
+            card.open = false;
+            memoryFirst = null;
+            memoryLocked = false;
+            drawMemory();
+        }, 850);
+    }
+}
+
+startMemory();
+
+
+/* =================================
+   TEST REFLEKSU
+================================= */
+
+let reactionState = "idle";
+let reactionTimer = null;
+let reactionStarted = 0;
+
+let reactionBest = Number(
+    localStorage.getItem("skyReactionBest")
+) || 0;
+
+function updateReactionBest() {
+    document.getElementById("reactionBest").textContent =
+        reactionBest ? reactionBest + " ms" : "--";
+}
+
+function startReaction() {
+    clearTimeout(reactionTimer);
+
+    reactionState = "waiting";
+
+    const box = document.getElementById("reactionBox");
+
+    box.classList.remove("ready");
+    box.style.background = "#e74c3c";
+    box.textContent = "CZEKAJ NA ZIELONE...";
+
+    document.getElementById("reactionResult").textContent =
+        "Nie klikaj jeszcze!";
+
+    reactionTimer = setTimeout(() => {
+        reactionState = "ready";
+        reactionStarted = performance.now();
+
+        box.classList.add("ready");
+        box.textContent = "KLIKNIJ TERAZ!";
+    }, 1200 + Math.random() * 2800);
+}
+
+function handleReaction() {
+    const box = document.getElementById("reactionBox");
+
+    if (reactionState === "idle" || reactionState === "done") {
+        startReaction();
+        return;
+    }
+
+    if (reactionState === "waiting") {
+        clearTimeout(reactionTimer);
+
+        reactionState = "done";
+        box.textContent = "Za wcześnie!";
+        box.classList.remove("ready");
+
+        document.getElementById("reactionResult").textContent =
+            "Poczekaj na zielony kolor i spróbuj ponownie.";
+
+        return;
+    }
+
+    if (reactionState === "ready") {
+        let result = Math.round(performance.now() - reactionStarted);
+
+        reactionState = "done";
+        box.classList.remove("ready");
+        box.textContent = "ŚWIETNIE!";
+
+        document.getElementById("reactionResult").textContent =
+            "Twój czas: " + result + " ms";
+
+        if (!reactionBest || result < reactionBest) {
+            reactionBest = result;
+            localStorage.setItem("skyReactionBest", result);
+            updateReactionBest();
+        }
+
+        recordWin();
+    }
+}
+
+function stopReaction() {
+    clearTimeout(reactionTimer);
+    reactionState = "idle";
+}
+
+updateReactionBest();
+
+</script>
+</body>
+</html>
